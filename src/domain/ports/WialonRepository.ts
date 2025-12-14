@@ -1,6 +1,4 @@
-import { Telemetry } from '../entities/Telemetry';
-
 export interface WialonRepository {
-  login(): Promise<string>; // retorna sid (eid)
-  getTelemetry(sid: string): Promise<Telemetry[]>;
+  login(): Promise<string>;
+  getRawItems(sid: string): Promise<any[]>;
 }

@@ -8,21 +8,36 @@ export class WialonToCarcoolMapper {
 
         const pos = item.pos;
         const params = item.lmsg?.p ?? {};
+
         const plate = (item.nm ?? 'SINPLA').substring(0, 6);
 
+        const odometer = params.io_16 !== undefined
+            ? Number(params.io_16)
+            : 0;
+
+        const engine = params.io_239 === 1 ? 1 : 0;
+
+        const rawFuel = params.io_270 !== undefined
+            ? Number(params.io_270)
+            : 0;
+
+        const levelFuel = Math.max(0, Math.min(100, rawFuel));
+
+
         return new CarcoolPosition(
-            pos.x,                       // lng
-            pos.y,                       // lat
-            item.uid,                    // IMEI
-            plate,      // plate
-            pos.s ?? 0,                  // velocity
-            pos.z ?? 0,                  // altitude
-            pos.c ?? 0,                  // angle
-            params.io_16 ?? 0,           // odometer
-            params.io_270 ?? 0,          // level_fuel
-            params.io_270 ?? 0,          // fuel_tank
-            params.io_239 === 1 ? 1 : 0, // engine
-            pos.t                        // 🔴 timestamp REAL del GPS
+            Number(pos.x),
+            Number(pos.y),
+            String(item.uid),
+            plate,
+            Number(pos.s ?? 0),
+            Number(pos.z ?? 0),
+            Number(pos.c ?? 0),
+            odometer,
+            levelFuel,   
+            rawFuel,     
+            engine,
+            Number(pos.t)
         );
+
     }
 }
